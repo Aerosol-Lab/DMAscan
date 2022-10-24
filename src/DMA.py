@@ -37,10 +37,10 @@ def axNormal(ax):
     ax.tick_params(axis='y')
 
 class DMAscan:
-    def __init__(self,entriesDAQ,entriesScan,entriesHV):
-        self.setVal(entriesDAQ,entriesScan,entriesHV)
+    def __init__(self,entriesDAQ,entriesScan,entriesHV,entriesFileName):
+        self.setVal(entriesDAQ,entriesScan,entriesHV,entriesFileName)
 
-    def setVal(self,entriesDAQ,entriesScan,entriesHV):
+    def setVal(self,entriesDAQ,entriesScan,entriesHV,entriesFileName):
         self.hv=HV.HV(entriesDAQ,entriesHV)
         self.cpc=CPC.CPC(entriesDAQ,entriesScan,entriesHV)
         self.Vmin=float(entriesScan[0].get())
@@ -52,7 +52,7 @@ class DMAscan:
         self.Vs=[]
         self.updateFlag=1
         self.stop=0
-        self.fileName="output.csv"
+        self.fileName=entriesFileName.get()
 
     def figUpdate(self,window):
         pltNormal()

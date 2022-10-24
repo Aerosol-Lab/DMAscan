@@ -118,32 +118,7 @@ def main():
         label = tk.Label(frameDMA,text=unitsDMA[i],background=bgColor,foreground=cColor)
         label.grid(row=[i],column=2)
 
-    # Generate DMA class
-    dma=DMA.DMAscan(entriesDAQ,entriesScan,entriesHV)
-
-    # function to stop/start scan
-    def stopScan():
-        dma.stop=1
-    def startScan():
-        dma.setVal(entriesDAQ,entriesScan,entriesHV)
-        thread = threading.Thread(target=dma.scan)
-        thread.start()
-    def startFix():
-        dma.setVal(entriesDAQ,entriesScan,entriesHV)
-        dma.cpc.mode=int(entriesFix[1].get())
-        dma.hv.HVout(float(entriesFix[0].get()))
-        thread.start()
-
-    # generate stop/start buttons
-    stop=tk.Button(frameScan,text="Stop",background="blue4",foreground=cColor,width=20,height=2,command=lambda:stopScan())
-    stop.grid(row=np.size(labelsScan)+1,column=0,columnspan=3)
-    start=tk.Button(frameScan,text="Start DMA scan",background="blue4",foreground=cColor,width=20,height=2,command=lambda:startScan())
-    start.grid(row=np.size(labelsScan),column=0,columnspan=3)
-    stopFix=tk.Button(frameFix,text="Stop",background="blue4",foreground=cColor,width=20,height=2,command=lambda:stopScan())
-    stopFix.grid(row=np.size(labelsFix)+1,column=0,columnspan=3)
-    startFix=tk.Button(frameFix,text="Start",background="blue4",foreground=cColor,width=20,height=2,command=lambda:startScan())
-    startFix.grid(row=np.size(labelsFix),column=0,columnspan=3)
-
+    # File control
     entriesFileName=tk.Entry(frameFile,width=50)
     entriesFileName.grid(row=0,column=1,sticky=tk.EW)
     for i in [0,2,4]:
@@ -156,6 +131,33 @@ def main():
 
     open_button = tk.Button(frameFile,text='Select a File',command=select_file)
     open_button.grid(row=0,column=3,sticky=tk.EW)
+
+
+    # Generate DMA class
+    dma=DMA.DMAscan(entriesDAQ,entriesScan,entriesHV,entriesFileName)
+
+    # function to stop/start scan
+    def stopScan():
+        dma.stop=1
+    def startScan():
+        dma.setVal(entriesDAQ,entriesScan,entriesHV,entriesFileName)
+        thread = threading.Thread(target=dma.scan)
+        thread.start()
+    def startFixV():
+        dma.setVal(entriesDAQ,entriesScan,entriesHV,entriesFileName)
+        dma.cpc.mode=int(entriesFix[1].get())
+        thread = threading.Thread(target=dma.hv.HVout(float(entriesFix[0].get())))
+        thread.start()
+
+    # generate stop/start buttons
+    stop=tk.Button(frameScan,text="Stop",background="blue4",foreground=cColor,width=20,height=2,command=lambda:stopScan())
+    stop.grid(row=np.size(labelsScan)+1,column=0,columnspan=3)
+    start=tk.Button(frameScan,text="Start DMA scan",background="blue4",foreground=cColor,width=20,height=2,command=lambda:startScan())
+    start.grid(row=np.size(labelsScan),column=0,columnspan=3)
+    stopFix=tk.Button(frameFix,text="Stop",background="blue4",foreground=cColor,width=20,height=2,command=lambda:stopScan())
+    stopFix.grid(row=np.size(labelsFix)+1,column=0,columnspan=3)
+    startFix=tk.Button(frameFix,text="Start",background="blue4",foreground=cColor,width=20,height=2,command=lambda:startFixV())
+    startFix.grid(row=np.size(labelsFix),column=0,columnspan=3)
 
 
     frameDAQ.grid_columnconfigure(1, weight=1)
