@@ -17,7 +17,6 @@ from tkinter.messagebox import showinfo
 import nidaqmx
 
 class CPC:
-    delay=0.0055
     def __init__(self,entriesDAQ,entriesScan,entriesHV):
         self.setVal(entriesDAQ,entriesScan,entriesHV)
 
@@ -25,11 +24,10 @@ class CPC:
         self.device_name=str(entriesDAQ[0].get())
         self.Vmin=float(entriesDAQ[1].get())
         self.Vmax=float(entriesDAQ[2].get())
-        self.wait=0.01
         self.sampleTime=float(entriesScan[2].get())
         self.mode=int(entriesScan[6].get())
-        self.time_rate = self.wait+self.delay
-        self.N = int(self.sampleTime/self.time_rate)
+        self.time_rate = 0.01
+        self.N = int(self.sampleTime/self.time_rate*0.5)
 
     def getC(self):
         C_all = []
@@ -43,9 +41,27 @@ class CPC:
             d_time = time.perf_counter()-start_time
             C_all.append(data)
             t_all.append(d_time)
-            time.sleep(self.wait)
+            time.sleep(self.time_rate)
         task.stop()
         task.close()
         if(self.mode==-1):
             ret=10**(np.average(C_all)-3)
         return ret
+
+    def timeOpt(self):
+        C_all = []
+        t_all = []
+        task = nidaqmx.Task()
+        task.ai_channels.add_ai_voltage_chan(self.device_name,min_val=self.Vmin,max_val=self.Vmax)
+        task.start()
+        start_time = time.perf_counter()
+        for i in np.arange(self.N):
+            data = task.read()
+            d_time = time.perf_counter()-start_time
+            C_all.append(data)
+            t_all.append(d_time)
+            time.sleep(self.time_rate)
+        task.stop()
+        task.close()
+        self.N = int(self.N/d_time*self.sampleTime)
+        print(d_time)

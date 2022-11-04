@@ -34,6 +34,7 @@ def main():
     frameFile=tk.LabelFrame(window,text="File setting",font=("",15),background=bgColor,foreground="white")
     frameFix=tk.LabelFrame(window,text="Fixed mode",font=("",15),background=bgColor,foreground="white")
     frameDMA=tk.LabelFrame(window,text="DMA parameters",font=("",15),background=bgColor,foreground="white")
+    frameFigset=tk.LabelFrame(window,background=bgColor)
 
     # Location of the frames
     frameDAQ.place(x=10,y=10,width=195,height=200)
@@ -42,13 +43,13 @@ def main():
     frameFile.place(x=10,y=490,width=405,height=70)
     frameFix.place(x=220,y=320,width=195,height=170)
     frameDMA.place(x=10,y=320,width=195,height=170)
-
+    frameFigset.place(x=10,y=430,width=200,height=20)
     # Labels for variables
     labelsDAQ=np.array(["CPC connection","V_CPC min","V_CPC max","HV connection","V_HV min","V_HV max"])
     labelsScan=np.array(["Min voltage","Max voltage","Time per a bin","Number of bins","Delay time","HV mode","CPC mode"])
     labelsHV=np.array(["      Slope      ","Bias"])
     labelsFix=np.array(["      Voltage      ","CPC mode"])
-    labelsDMA=np.array(["Lenght","Inner diameter","Outer diameter","Sheath flow","Aerosol flow"])
+    labelsDMA=np.array(["Lenght","Inner radiusr","Outer radius","Sheath flow","Aerosol flow"])
 
     # Units of variables
     unitsDAQ=np.array([" ","V","V"," ","V","V"])
@@ -58,11 +59,11 @@ def main():
     unitsDMA=np.array(["mm","mm","mm","L/min","L/min"])
 
     # Initial values
-    initialsDAQ=np.array(["Dev1/ai0",0,10,"Dev1/ao1",0,5])
+    initialsDAQ=np.array(["Dev2/ai0",0,10,"Dev2/ao1",0,5])
     initialsScan=np.array([10,1000,5,10,2,0,-1])
     initialsHV=np.array([2000,0])
     initialsFix=np.array([10,-1])
-    initialsDMA=np.array([10,10,20,15,1.5])
+    initialsDMA=np.array([443,19.61,9.37,15,1.5])
 
     # Initialize entries
     entriesDAQ=[]
@@ -121,10 +122,12 @@ def main():
     # File control
     entriesFileName=tk.Entry(frameFile,width=50)
     entriesFileName.grid(row=0,column=1,sticky=tk.EW)
+    entriesFileName.delete(0,tk.END)
+    entriesFileName.insert(tk.END,"C:/Users/Public/test.csv")
     for i in [0,2,4]:
         tk.Label(frameFile,text=" ",background=bgColor).grid(row=0,column=i)
     def select_file():
-        filename = fd.askopenfilename(title='Open a file',initialdir='/Users/tamat/HV/DMAscan/')
+        filename = fd.askopenfilename(title='Open a file',initialdir='C:/Users/Public/')
         showinfo(title='Selected File',message=filename)
         entriesFileName.delete(0,tk.END)
         entriesFileName.insert(tk.END,filename)
@@ -134,17 +137,17 @@ def main():
 
 
     # Generate DMA class
-    dma=DMA.DMAscan(entriesDAQ,entriesScan,entriesHV,entriesFileName)
+    dma=DMA.DMAscan(entriesDAQ,entriesScan,entriesHV,entriesFileName,entriesDMA)
 
     # function to stop/start scan
     def stopScan():
         dma.stop=1
     def startScan():
-        dma.setVal(entriesDAQ,entriesScan,entriesHV,entriesFileName)
+        dma.setVal(entriesDAQ,entriesScan,entriesHV,entriesFileName,entriesDMA)
         thread = threading.Thread(target=dma.scan)
         thread.start()
     def startFixV():
-        dma.setVal(entriesDAQ,entriesScan,entriesHV,entriesFileName)
+        dma.setVal(entriesDAQ,entriesScan,entriesHV,entriesName)
         dma.cpc.mode=int(entriesFix[1].get())
         thread = threading.Thread(target=dma.hv.HVout(float(entriesFix[0].get())))
         thread.start()
@@ -172,6 +175,7 @@ def main():
     frameFix.grid_rowconfigure(list(range(np.size(labelsFix)+2)), weight=1)
     frameDMA.grid_columnconfigure(1, weight=1)
     frameDMA.grid_rowconfigure(list(range(np.size(labelsDMA))), weight=1)
+
 
     def update():
         if(dma.updateFlag):
