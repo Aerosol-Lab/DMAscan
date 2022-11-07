@@ -34,7 +34,6 @@ def main():
     frameFile=tk.LabelFrame(window,text="File setting",font=("",15),background=bgColor,foreground="white")
     frameFix=tk.LabelFrame(window,text="Fixed mode",font=("",15),background=bgColor,foreground="white")
     frameDMA=tk.LabelFrame(window,text="DMA parameters",font=("",15),background=bgColor,foreground="white")
-    frameFigset=tk.LabelFrame(window,background=bgColor)
 
     # Location of the frames
     frameDAQ.place(x=10,y=10,width=195,height=200)
@@ -43,7 +42,6 @@ def main():
     frameFile.place(x=10,y=490,width=405,height=70)
     frameFix.place(x=220,y=320,width=195,height=170)
     frameDMA.place(x=10,y=320,width=195,height=170)
-    frameFigset.place(x=10,y=430,width=200,height=20)
     # Labels for variables
     labelsDAQ=np.array(["CPC connection","V_CPC min","V_CPC max","HV connection","V_HV min","V_HV max"])
     labelsScan=np.array(["Min voltage","Max voltage","Time per a bin","Number of bins","Delay time","HV mode","CPC mode"])
