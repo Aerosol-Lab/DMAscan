@@ -64,4 +64,3 @@ class CPC:
         task.stop()
         task.close()
         self.N = int(self.N/d_time*self.sampleTime)
-        print(d_time)

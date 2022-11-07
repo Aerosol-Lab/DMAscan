@@ -13,7 +13,7 @@
 ### Run from source code
 * For Anaconda user (you can get Anaconda from [here](https://www.anaconda.com/))
 Most of labraries are installed for Anaconda user case but you only need to download NI-DAQ driver from this [link](https://www.ni.com/en-us/support/downloads/drivers/download.ni-daqmx.html#460239).  After the installation, you can run `HV.py` from any console like Powershell Prompt or JupyterLab.
-* For not Anaconta user
+* For not Anaconda user
 You need to install the modules if it isn't: Numpy, Tkinter, Matplotlib, and [NI-DAQ driver](https://www.ni.com/en-us/support/downloads/drivers/download.ni-daqmx.html#460239), then you can run `HV.py`.  Here, the explanation is brielf since "not Anaconda" user may know a lot how to install and use it.
 
 # Author
