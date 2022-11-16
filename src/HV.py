@@ -32,5 +32,6 @@ class HV:
         task=nidaqmx.Task()
         task.ao_channels.add_ao_voltage_chan(self.device_name,min_val=self.Vmin,max_val=self.Vmax)
         task.start()
+        print(Vin)
         task.write(Vin)
         task.close()

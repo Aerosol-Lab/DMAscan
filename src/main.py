@@ -145,7 +145,7 @@ def main():
         thread = threading.Thread(target=dma.scan)
         thread.start()
     def startFixV():
-        dma.setVal(entriesDAQ,entriesScan,entriesHV,entriesName)
+        dma.setVal(entriesDAQ,entriesScan,entriesHV,entriesFileName,entriesDMA)
         dma.cpc.mode=int(entriesFix[1].get())
         thread = threading.Thread(target=dma.hv.HVout(float(entriesFix[0].get())))
         thread.start()

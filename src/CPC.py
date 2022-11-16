@@ -13,6 +13,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
+from nidaqmx.constants import TerminalConfiguration
 
 import nidaqmx
 
@@ -33,7 +34,7 @@ class CPC:
         C_all = []
         t_all = []
         task = nidaqmx.Task()
-        task.ai_channels.add_ai_voltage_chan(self.device_name,min_val=self.Vmin,max_val=self.Vmax)
+        task.ai_channels.add_ai_voltage_chan(self.device_name,min_val=self.Vmin,max_val=self.Vmax,terminal_config=TerminalConfiguration.RSE)
         task.start()
         start_time = time.perf_counter()
         for i in np.arange(self.N):
@@ -44,6 +45,7 @@ class CPC:
             time.sleep(self.time_rate)
         task.stop()
         task.close()
+        print(np.average(C_all))
         if(self.mode==-1):
             ret=10**(np.average(C_all)-3)
         return ret
