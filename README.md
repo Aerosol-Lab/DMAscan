@@ -1,7 +1,7 @@
 # DMA-CPC control with DAQ (NI)
 ## 1. Overview
 This code is able to be utilized for controling differential mobility analyzer (DMA) and condensation particle conuter (CPC) which is known as scaning mobility particle sizer (SMPS, a particle size distribution measurements in gas).  This code works with GUI as desplayed in this figure.
-
+<img width="497" alt="fig1" src="https://user-images.githubusercontent.com/75816343/204118211-67cc4e74-2c9d-43b5-9d55-788531ff42e8.png">
 ## 2. Usage
 ### 2.1. Executable version
 #### Preparation  
