@@ -9,7 +9,7 @@ This code is able to be utilized for controling differential mobility analyzer (
 2. Download NI-DAQ driver from [here](https://www.ni.com/en-us/support/downloads/drivers/download.ni-daqmx.html#460239) and install it (it just follow their instruction).  
 #### Usage
 1. Double click `DMACPC.exe` file
-2. Set the device name and port to use.  Default value is Dev1/ai0 for the reading from CPC and Dev1/ao1 for sending control signal to high voltage source.  Device name is obtained from "NI Device Monitor" when the device is connected with your PC via usb cable.  
+2. Set the device name and port to use.  Default value is Dev1/ai0 for the reading from CPC and Dev1/ao1 for sending control signal to high voltage source.  Device name is obtained from "NI Device Monitor" when the device is connected to your PC via usb cable.  
 ...
 
 ### 2.2. Run from source code
