@@ -15,6 +15,9 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 
+import time
+from datetime import datetime
+
 import nidaqmx
 import CPC
 import HV
@@ -90,7 +93,7 @@ class DMAscan:
             ax.scatter(self.Vs,self.Cs,color="blue")
         if(self.xflag==1):
             ax.set_xlabel("Particle diameter [nm]")
-            ax.scatter(self.Dps*1e9,self.Cs,color="blue")
+            ax.scatter(np.array(self.Dps)*1e9,self.Cs,color="blue")
         if(self.xflag==2):
             ax.set_xlabel(r"Electrical mobility [cm$^2$ s$^{-1}$]")
             ax.scatter(self.Zps,self.Cs,color="blue")
@@ -117,6 +120,8 @@ class DMAscan:
             self.updateFlag=1
             if(self.stop==1):
                 break
+        date_time = str(datetime.now()).replace(":","_")
+        self.fileName = "DMA_scan_"+date_time+".dat"
         f=open(self.fileName,"w")
         f.write("V [V],Zp [cm2/s],Dp [nm],Conc. [1/cc]\n")
         for i in np.arange(np.size(self.Cs)):
