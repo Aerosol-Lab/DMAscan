@@ -165,7 +165,6 @@ def main():
     def DMA_fixV_status():
         window.configure(bg="green")
         dma.hv.HVout(float(entriesFix[0].get()))
-        window.configure(bg=bgColor)
     def stopScan():
         dma.stop=1
         window.configure(bg=bgColor)
