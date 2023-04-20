@@ -67,7 +67,7 @@ def main():
     labelsScan=np.array(["Min voltage","Max voltage","Time per a bin","Number of bins","Delay time","HV mode","CPC mode"])
     labelsHV=np.array(["      Slope      ","Bias"])
     labelsFix=np.array(["      Voltage      ","CPC mode"])
-    labelsDMA=np.array(["Lenght","Inner radiusr","Outer radius","Sheath flow","Aerosol flow"])
+    labelsDMA=np.array(["Lenght","Inner radius","Outer radius","Sheath flow","Aerosol flow"])
 
     # Units of variables
     unitsDAQ=np.array([" ","V","V"," ","V","V"])
@@ -81,7 +81,7 @@ def main():
     initialsScan=np.array([10,1000,5,10,2,0,-1])
     initialsHV=np.array([3999.1,-0.9668])
     initialsFix=np.array([10,-1])
-    initialsDMA=np.array([443,19.61,9.37,3,0.3])
+    initialsDMA=np.array([443,9.37,19.61,3,0.3])
 
     # Initialize entries
     entriesDAQ=[]

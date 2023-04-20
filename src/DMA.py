@@ -72,10 +72,10 @@ class DMAscan:
         self.Vstep=int(entriesScan[3].get())
         self.delayTime=float(entriesScan[4].get())
         self.HVmode=int(entriesScan[5].get())
-        Rratio=float(entriesDMA[1].get())/float(entriesDMA[2].get())
+        Rratio=float(entriesDMA[2].get())/float(entriesDMA[1].get())
         L=float(entriesDMA[0].get())*1e-3
-        Q=(float(entriesDMA[3].get())+float(entriesDMA[4].get()))/6e4
-        self.coeff=Q*np.log(Rratio)/(2.0*np.pi*L)
+        Q_sheath = (float(entriesDMA[3].get())) * (1.66667e-5)
+        self.coeff = 2*Q_sheath*np.log(Rratio)/(4.0*np.pi*L)
         self.Cs, self.Vs, self.Dps, self.Zps = [], [], [], []
         self.updateFlag=1
         self.stop=0
