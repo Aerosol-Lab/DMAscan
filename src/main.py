@@ -9,6 +9,9 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 
+import time
+from datetime import datetime
+
 import nidaqmx
 import CPC
 import HV
@@ -18,7 +21,8 @@ bgColor="blue"
 cColor="white"
 
 def save_data(tydata,outpath,filename):
-    save_file_name =  outpath+"/"+filename
+    date_time = str(datetime.now()).replace(":","_")
+    save_file_name = date_time+filename
     np.savetxt(save_file_name, tydata, delimiter=',')
 
 def main():
@@ -26,6 +30,22 @@ def main():
     window.title("DMA scan test")
     window.geometry("1000x590")
     window.configure(bg=bgColor)
+    
+    # Drop Menu Plot results
+    # function to change plot type
+    def define_plot_option(plot_opt):
+        if(plot_opt == "Voltage"):
+            dma.xflag = 0
+        elif(plot_opt == "Diameter"):
+            dma.xflag = 1
+        elif(plot_opt == "Mobility"):
+            dma.xflag = 2
+        dma.updateFlag = 1
+    plot_options = ["Diameter", "Voltage", "Mobility"]
+    var_plot_options = tk.StringVar()
+    var_plot_options.set("Voltage")
+    DropMenu_plot_options = tk.OptionMenu(window, var_plot_options, *plot_options, command=define_plot_option)
+    DropMenu_plot_options.place(x=620, y=560)
 
     # Frame setting
     frameDAQ=tk.LabelFrame(window,text="DAQ settings",font=("",15),background=bgColor,foreground="white")
@@ -47,7 +67,7 @@ def main():
     labelsScan=np.array(["Min voltage","Max voltage","Time per a bin","Number of bins","Delay time","HV mode","CPC mode"])
     labelsHV=np.array(["      Slope      ","Bias"])
     labelsFix=np.array(["      Voltage      ","CPC mode"])
-    labelsDMA=np.array(["Lenght","Inner radiusr","Outer radius","Sheath flow","Aerosol flow"])
+    labelsDMA=np.array(["Lenght","Inner radius","Outer radius","Sheath flow","Aerosol flow"])
 
     # Units of variables
     unitsDAQ=np.array([" ","V","V"," ","V","V"])
@@ -57,11 +77,11 @@ def main():
     unitsDMA=np.array(["mm","mm","mm","L/min","L/min"])
 
     # Initial values
-    initialsDAQ=np.array(["Dev2/ai0",0,10,"Dev2/ao1",0,5])
+    initialsDAQ=np.array(["Dev2/ai0",0,10,"Dev2/ao0",0,5])
     initialsScan=np.array([10,1000,5,10,2,0,-1])
-    initialsHV=np.array([2000,0])
+    initialsHV=np.array([3999.1,-0.9668])
     initialsFix=np.array([10,-1])
-    initialsDMA=np.array([443,19.61,9.37,15,1.5])
+    initialsDMA=np.array([443,9.37,19.61,3,0.3])
 
     # Initialize entries
     entriesDAQ=[]
@@ -121,7 +141,7 @@ def main():
     entriesFileName=tk.Entry(frameFile,width=50)
     entriesFileName.grid(row=0,column=1,sticky=tk.EW)
     entriesFileName.delete(0,tk.END)
-    entriesFileName.insert(tk.END,"C:/Users/Public/test.csv")
+    entriesFileName.insert(tk.END,"")
     for i in [0,2,4]:
         tk.Label(frameFile,text=" ",background=bgColor).grid(row=0,column=i)
     def select_file():
@@ -138,16 +158,24 @@ def main():
     dma=DMA.DMAscan(entriesDAQ,entriesScan,entriesHV,entriesFileName,entriesDMA)
 
     # function to stop/start scan
+    def DMA_scan_status():
+        window.configure(bg="green")
+        dma.scan()
+        window.configure(bg=bgColor)
+    def DMA_fixV_status():
+        window.configure(bg="green")
+        dma.hv.HVout(float(entriesFix[0].get()))
     def stopScan():
         dma.stop=1
+        window.configure(bg=bgColor)
     def startScan():
         dma.setVal(entriesDAQ,entriesScan,entriesHV,entriesFileName,entriesDMA)
-        thread = threading.Thread(target=dma.scan)
+        thread = threading.Thread(target=DMA_scan_status)
         thread.start()
     def startFixV():
         dma.setVal(entriesDAQ,entriesScan,entriesHV,entriesFileName,entriesDMA)
         dma.cpc.mode=int(entriesFix[1].get())
-        thread = threading.Thread(target=dma.hv.HVout(float(entriesFix[0].get())))
+        thread = threading.Thread(target=DMA_fixV_status)
         thread.start()
 
     # generate stop/start buttons
