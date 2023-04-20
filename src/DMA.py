@@ -15,6 +15,9 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 
+import time
+from datetime import datetime
+
 import nidaqmx
 import CPC
 import HV
@@ -69,10 +72,10 @@ class DMAscan:
         self.Vstep=int(entriesScan[3].get())
         self.delayTime=float(entriesScan[4].get())
         self.HVmode=int(entriesScan[5].get())
-        Rratio=float(entriesDMA[1].get())/float(entriesDMA[2].get())
+        Rratio=float(entriesDMA[2].get())/float(entriesDMA[1].get())
         L=float(entriesDMA[0].get())*1e-3
-        Q=(float(entriesDMA[3].get())+float(entriesDMA[4].get()))/6e4
-        self.coeff=Q*np.log(Rratio)/(2.0*np.pi*L)
+        Q_sheath = (float(entriesDMA[3].get())) * (1.66667e-5)
+        self.coeff = 2*Q_sheath*np.log(Rratio)/(4.0*np.pi*L)
         self.Cs, self.Vs, self.Dps, self.Zps = [], [], [], []
         self.updateFlag=1
         self.stop=0
@@ -90,7 +93,7 @@ class DMAscan:
             ax.scatter(self.Vs,self.Cs,color="blue")
         if(self.xflag==1):
             ax.set_xlabel("Particle diameter [nm]")
-            ax.scatter(self.Dps*1e9,self.Cs,color="blue")
+            ax.scatter(np.array(self.Dps)*1e9,self.Cs,color="blue")
         if(self.xflag==2):
             ax.set_xlabel(r"Electrical mobility [cm$^2$ s$^{-1}$]")
             ax.scatter(self.Zps,self.Cs,color="blue")
@@ -117,6 +120,8 @@ class DMAscan:
             self.updateFlag=1
             if(self.stop==1):
                 break
+        date_time = str(datetime.now()).replace(":","_")
+        self.fileName = "DMA_scan_"+date_time+".dat"
         f=open(self.fileName,"w")
         f.write("V [V],Zp [cm2/s],Dp [nm],Conc. [1/cc]\n")
         for i in np.arange(np.size(self.Cs)):
